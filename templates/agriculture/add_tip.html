@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}My e-Village - Post Farming Advice{% endblock %}
+
+{% block content %}
+<section style="padding: 60px 0; background: linear-gradient(135deg, hsl(var(--primary-hue), 60%, 98%) 0%, hsl(199, 60%, 98%) 100%);">
+    <div class="container" style="display: flex; justify-content: center;">
+        <div class="card glass" style="width: 100%; max-width: 600px; padding: 40px; border-radius: var(--radius-lg);">
+            <div style="margin-bottom: 24px;">
+                <span class="badge badge-success" style="margin-bottom: 8px;">Kisan Mitra Center</span>
+                <h2 style="font-size: 28px;">Post Agricultural Advisory</h2>
+                <p style="color: var(--text-secondary); font-size: 14px;">Publish seasonal farming advice, pest warnings, or fertilizer guidelines.</p>
+            </div>
+            
+            <form action="{% url 'agriculture:add_tip' %}" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                
+                <div class="form-group">
+                    <label for="title" class="form-label">Advisory Title</label>
+                    <input type="text" name="title" id="title" class="form-control" placeholder="e.g. Soybean Soil Treatment / Fall Armyworm Alert" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="category" class="form-label">Category</label>
+                    <select name="category" id="category" class="form-control">
+                        <option value="CROP">Crop Advisory</option>
+                        <option value="WEATHER">Weather Alert</option>
+                        <option value="FERTILIZER">Fertilizer & Soil Guidance</option>
+                        <option value="PEST">Pest & Disease Control</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="crop_name" class="form-label">Target Crop (Optional)</label>
+                    <input type="text" name="crop_name" id="crop_name" class="form-control" placeholder="e.g. Cotton, Soybean, Onion">
+                </div>
+
+                <div class="form-group">
+                    <label for="content" class="form-label">Advisory Content / Instructions</label>
+                    <textarea name="content" id="content" class="form-control" placeholder="Provide complete instruction details here..." required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="image" class="form-label">Attachment Image (Optional)</label>
+                    <input type="file" name="image" id="image" class="form-control" accept="image/*" style="padding: 8px 12px;">
+                </div>
+                
+                <div style="display: flex; gap: 16px; margin-top: 24px;">
+                    <button type="submit" class="btn btn-success" style="flex-grow: 1;">Publish Advisory</button>
+                    <a href="{% url 'agriculture:home' %}" class="btn btn-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+{% endblock %}

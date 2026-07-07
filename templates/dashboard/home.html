@@ -1,0 +1,205 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}My e-Village Wadgaon - Home{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero">
+    <div class="container hero-grid">
+        <div class="hero-content">
+            <h1 class="hero-title" data-translate="welcome_msg">Empowering Rural Communities through Digital Connectivity</h1>
+            <p class="hero-description" data-translate="subtitle_msg">A modern platform connecting citizens with notices, government schemes, agricultural advice, grievance handling, and local trade.</p>
+            <div class="hero-buttons" style="display: flex; gap: 16px; flex-wrap: wrap;">
+                <a href="{% url 'complaints:submit' %}" class="btn btn-primary btn-lg" data-translate="submit_complaint">Register Complaint</a>
+                <a href="{% url 'marketplace:list' %}" class="btn btn-secondary btn-lg" data-translate="explore_marketplace">Local Marketplace</a>
+                <a href="{% url 'schemes:list' %}" class="btn btn-secondary btn-lg" data-translate="view_schemes">Government Schemes</a>
+            </div>
+        </div>
+        <div class="hero-widget">
+            <!-- Weather & Agri Alert Widget (Glassmorphism) -->
+            <div class="card glass" style="padding: 24px; border-radius: var(--radius-lg);">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                    <h3 data-translate="weather_title" style="font-size: 18px; display: flex; align-items: center; gap: 8px;">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--warning)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/><circle cx="12" cy="12" r="4"/></svg>
+                        Farming & Weather Alert
+                    </h3>
+                    <span class="badge badge-pending" style="font-size: 11px;">Live</span>
+                </div>
+                <h4 data-translate="weather_temp" style="font-size: 24px; font-weight: 800; margin-bottom: 8px; color: var(--primary);">28°C - Scattered Rain</h4>
+                <p data-translate="weather_desc" style="font-size: 14px; color: var(--text-secondary); line-height: 1.5; margin-bottom: 16px;">Clear field drainage channels. Good time to apply organic fertilizers.</p>
+                <div style="font-size: 12px; color: var(--text-muted); text-align: right; font-style: italic;">Updated 10 mins ago</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Village Profile Stats -->
+<section style="padding: 60px 0; background-color: var(--surface); border-bottom: 1px solid var(--border-color);">
+    <div class="container">
+        <div style="text-align: center; margin-bottom: 48px; max-width: 700px; margin-left: auto; margin-right: auto;">
+            <span class="badge badge-progress" style="margin-bottom: 12px;">Village Profile</span>
+            <h2 style="font-size: 36px; margin-bottom: 16px;">{{ profile.name }}</h2>
+            <p style="color: var(--text-secondary); font-size: 16px;">{{ profile.about_text }}</p>
+        </div>
+
+        <div class="grid grid-4">
+            <!-- Stat 1 -->
+            <div class="card" style="text-align: center; padding: 32px 24px;">
+                <div style="width: 60px; height: 60px; border-radius: var(--radius-full); background-color: var(--primary-light); color: var(--primary); display: inline-flex; align-items: center; justify-content: center; margin-bottom: 20px;">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                </div>
+                <h3 style="font-size: 32px; font-weight: 800; margin-bottom: 4px;">{{ profile.population }}</h3>
+                <p data-translate="population" style="color: var(--text-secondary); font-size: 14px; font-weight: 500;">Population</p>
+            </div>
+            <!-- Stat 2 -->
+            <div class="card" style="text-align: center; padding: 32px 24px;">
+                <div style="width: 60px; height: 60px; border-radius: var(--radius-full); background-color: var(--success-light); color: var(--success); display: inline-flex; align-items: center; justify-content: center; margin-bottom: 20px;">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c0 2 2 3 6 3s6-1 6-3v-5"/></svg>
+                </div>
+                <h3 style="font-size: 32px; font-weight: 800; margin-bottom: 4px;">{{ profile.schools_count }}</h3>
+                <p data-translate="schools" style="color: var(--text-secondary); font-size: 14px; font-weight: 500;">Schools</p>
+            </div>
+            <!-- Stat 3 -->
+            <div class="card" style="text-align: center; padding: 32px 24px;">
+                <div style="width: 60px; height: 60px; border-radius: var(--radius-full); background-color: var(--danger-light); color: var(--danger); display: inline-flex; align-items: center; justify-content: center; margin-bottom: 20px;">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+                </div>
+                <h3 style="font-size: 32px; font-weight: 800; margin-bottom: 4px;">{{ profile.hospitals_count }}</h3>
+                <p data-translate="hospitals" style="color: var(--text-secondary); font-size: 14px; font-weight: 500;">Hospitals</p>
+            </div>
+            <!-- Stat 4 -->
+            <div class="card" style="text-align: center; padding: 32px 24px;">
+                <div style="width: 60px; height: 60px; border-radius: var(--radius-full); background-color: var(--warning-light); color: var(--warning); display: inline-flex; align-items: center; justify-content: center; margin-bottom: 20px;">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z"/></svg>
+                </div>
+                <h3 style="font-size: 32px; font-weight: 800; margin-bottom: 4px;">{{ profile.water_connections }}</h3>
+                <p data-translate="water_connections" style="color: var(--text-secondary); font-size: 14px; font-weight: 500;">Water Connections</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Notices & Mandi Info Grid -->
+<section style="padding: 80px 0;">
+    <div class="container">
+        <div style="display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 40px;">
+            <!-- Left Side: Notices -->
+            <div>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+                    <h2 style="font-size: 28px;">Latest Village Notices</h2>
+                    <a href="{% url 'notices:list' %}" class="btn btn-secondary btn-sm" data-translate="view_all_notices">View All Notices</a>
+                </div>
+                
+                <div style="display: flex; flex-direction: column; gap: 20px;">
+                    {% for notice in latest_notices %}
+                        <div class="card" style="padding: 24px; position: relative;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                                <span class="badge {% if notice.category == 'MEETINGS' %}badge-progress{% elif notice.category == 'HEALTH' %}badge-resolved{% else %}badge-pending{% endif %}">
+                                    {{ notice.get_category_display }}
+                                </span>
+                                {% if notice.is_urgent %}
+                                    <span class="badge badge-urgent" style="font-size: 10px;">Urgent</span>
+                                {% endif %}
+                            </div>
+                            <h3 style="font-size: 20px; margin-bottom: 8px;">{{ notice.title }}</h3>
+                            <p style="color: var(--text-secondary); font-size: 14px; margin-bottom: 16px;">{{ notice.content }}</p>
+                            <div style="display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: var(--text-muted);">
+                                <span>Published by: {{ notice.published_by.get_full_name|default:notice.published_by.username }}</span>
+                                <span>{{ notice.created_at|date:"d M Y, h:i A" }}</span>
+                            </div>
+                        </div>
+                    {% empty %}
+                        <div class="card" style="padding: 40px; text-align: center; color: var(--text-muted);">
+                            No notices posted yet.
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Right Side: Mandi Prices -->
+            <div>
+                <h2 style="font-size: 28px; margin-bottom: 24px;">Local Mandi Prices</h2>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Crop Name</th>
+                                <th>Price (per Quintal)</th>
+                                <th>Market</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in mandi_prices %}
+                                <tr>
+                                    <td style="font-weight: 600; color: var(--text-primary);">{{ item.crop_name }}</td>
+                                    <td style="font-weight: 700; color: var(--primary);">₹{{ item.price_per_quintal }}</td>
+                                    <td style="color: var(--text-secondary); font-size: 13px;">{{ item.market_name }}</td>
+                                </tr>
+                            {% empty %}
+                                <tr>
+                                    <td colspan="3" style="text-align: center; color: var(--text-muted); padding: 30px;">Mandi prices loading...</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                
+                <!-- Quick Contacts Widget -->
+                <div class="card glass" style="padding: 24px; border-radius: var(--radius-lg); margin-top: 30px;">
+                    <h3 style="font-size: 18px; margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--danger)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                        Emergency Hotlines
+                    </h3>
+                    <ul style="list-style: none; display: flex; flex-direction: column; gap: 12px;">
+                        {% for contact in emergency_contacts %}
+                            <li style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 8px;">
+                                <div>
+                                    <h4 style="font-size: 14px; font-weight: 600;">{{ contact.name }}</h4>
+                                    <span style="font-size: 12px; color: var(--text-muted);">{{ contact.get_service_type_display }}</span>
+                                </div>
+                                <a href="tel:{{ contact.contact_number }}" style="font-weight: 700; color: var(--danger); font-size: 14px;">{{ contact.contact_number }}</a>
+                            </li>
+                        {% empty %}
+                            <li style="color: var(--text-muted); font-size: 14px;">No emergency contacts listed.</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Services Grid -->
+<section style="padding: 60px 0; background-color: var(--background);">
+    <div class="container">
+        <h2 style="font-size: 32px; text-align: center; margin-bottom: 48px;" data-translate="quick_links">Quick Services Hub</h2>
+        <div class="grid grid-3">
+            <!-- Card 1: Agriculture -->
+            <a href="{% url 'agriculture:home' %}" class="card" style="padding: 30px; text-align: center;">
+                <div style="width: 56px; height: 56px; border-radius: var(--radius-md); background-color: var(--success-light); color: var(--success); display: inline-flex; align-items: center; justify-content: center; margin-bottom: 20px; margin-left: auto; margin-right: auto;">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                </div>
+                <h3 style="font-size: 20px; margin-bottom: 12px;" data-translate="agriculture">Agriculture Advisory</h3>
+                <p style="color: var(--text-secondary); font-size: 14px;">Real-time crop advice, weather alerts, fertilizer guidance, and local mandi rates.</p>
+            </a>
+            <!-- Card 2: Schemes -->
+            <a href="{% url 'schemes:list' %}" class="card" style="padding: 30px; text-align: center;">
+                <div style="width: 56px; height: 56px; border-radius: var(--radius-md); background-color: var(--primary-light); color: var(--primary); display: inline-flex; align-items: center; justify-content: center; margin-bottom: 20px; margin-left: auto; margin-right: auto;">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                </div>
+                <h3 style="font-size: 20px; margin-bottom: 12px;" data-translate="view_schemes">Government Schemes</h3>
+                <p style="color: var(--text-secondary); font-size: 14px;">Browse central and state government benefits, eligibility requirements, and apply links.</p>
+            </a>
+            <!-- Card 3: Marketplace -->
+            <a href="{% url 'marketplace:list' %}" class="card" style="padding: 30px; text-align: center;">
+                <div style="width: 56px; height: 56px; border-radius: var(--radius-md); background-color: var(--warning-light); color: var(--warning); display: inline-flex; align-items: center; justify-content: center; margin-bottom: 20px; margin-left: auto; margin-right: auto;">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+                </div>
+                <h3 style="font-size: 20px; margin-bottom: 12px;" data-translate="explore_marketplace">Local Marketplace</h3>
+                <p style="color: var(--text-secondary); font-size: 14px;">Buy and sell local organic produce, dairy, handicrafts, and tailoring/repair services.</p>
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}

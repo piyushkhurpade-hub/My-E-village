@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}My e-Village - {{ scheme.title }}{% endblock %}
+
+{% block content %}
+<section style="padding: 60px 0; background: linear-gradient(135deg, hsl(var(--primary-hue), 60%, 98%) 0%, hsl(199, 60%, 98%) 100%);">
+    <div class="container" style="max-width: 800px;">
+        <a href="{% url 'schemes:list' %}" style="display: inline-flex; align-items: center; gap: 8px; margin-bottom: 24px; font-weight: 600; color: var(--text-secondary);">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+            Back to Schemes
+        </a>
+
+        <div class="card" style="padding: 40px; border-radius: var(--radius-lg);">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 24px; margin-bottom: 32px;">
+                <div>
+                    <span class="badge {% if scheme.category == 'FARMERS' %}badge-success{% elif scheme.category == 'EDUCATION' %}badge-progress{% else %}badge-pending{% endif %}" style="margin-bottom: 12px;">
+                        {{ scheme.get_category_display }}
+                    </span>
+                    <h1 style="font-size: 32px; font-weight: 800; line-height: 1.3;">{{ scheme.title }}</h1>
+                </div>
+                <div style="text-align: right;">
+                    <span style="font-size: 13px; color: var(--text-muted); display: block; margin-bottom: 4px;">Application Deadline</span>
+                    {% if scheme.last_date %}
+                        <strong style="color: var(--danger); font-size: 18px;">{{ scheme.last_date|date:"d M Y" }}</strong>
+                    {% else %}
+                        <strong style="color: var(--success); font-size: 18px;">Open Always</strong>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Description -->
+            <div style="margin-bottom: 32px;">
+                <h3 style="font-size: 20px; margin-bottom: 12px; border-left: 4px solid var(--primary); padding-left: 12px;">Scheme Description</h3>
+                <p style="color: var(--text-secondary); line-height: 1.7; font-size: 15px;">{{ scheme.description }}</p>
+            </div>
+
+            <!-- Eligibility -->
+            <div style="margin-bottom: 32px;">
+                <h3 style="font-size: 20px; margin-bottom: 12px; border-left: 4px solid var(--success); padding-left: 12px;">Who is Eligible?</h3>
+                <div style="color: var(--text-secondary); line-height: 1.7; font-size: 15px; background-color: var(--success-light); padding: 20px; border-radius: var(--radius-md); white-space: pre-line;">{{ scheme.eligibility }}</div>
+            </div>
+
+            <!-- Required Documents -->
+            <div style="margin-bottom: 40px;">
+                <h3 style="font-size: 20px; margin-bottom: 12px; border-left: 4px solid var(--warning); padding-left: 12px;">Required Documents Checklist</h3>
+                <div style="color: var(--text-secondary); line-height: 1.7; font-size: 15px; background-color: var(--warning-light); padding: 20px; border-radius: var(--radius-md); white-space: pre-line;">{{ scheme.required_documents }}</div>
+            </div>
+
+            <!-- Action button -->
+            <div style="display: flex; gap: 16px; border-top: 1px solid var(--border-color); padding-top: 32px; justify-content: flex-end;">
+                {% if scheme.apply_link %}
+                    <a href="{{ scheme.apply_link }}" target="_blank" class="btn btn-primary btn-lg">Apply Online Now &nearr;</a>
+                {% else %}
+                    <span class="btn btn-secondary btn-lg" style="cursor: not-allowed; opacity: 0.7;">Apply offline at Gram Panchayat Office</span>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

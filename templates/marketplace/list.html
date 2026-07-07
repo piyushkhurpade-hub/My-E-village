@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}My e-Village - Local Marketplace{% endblock %}
+
+{% block content %}
+<section style="padding: 60px 0; background: linear-gradient(135deg, hsl(var(--primary-hue), 60%, 98%) 0%, hsl(199, 60%, 98%) 100%);">
+    <div class="container">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px; flex-wrap: wrap; gap: 16px;">
+            <div>
+                <span class="badge badge-success" style="margin-bottom: 8px;">Grameen Bazar</span>
+                <h1 style="font-size: 36px; font-weight: 800;">Local Marketplace</h1>
+            </div>
+            {% if user.is_authenticated %}
+                <a href="{% url 'marketplace:add' %}" class="btn btn-primary">+ List Your Product/Service</a>
+            {% else %}
+                <a href="{% url 'accounts:login' %}?next={% url 'marketplace:add' %}" class="btn btn-primary">Login to Sell Products</a>
+            {% endif %}
+        </div>
+
+        <!-- Search and Filter Bar -->
+        <div class="search-filter-bar card" style="padding: 16px 24px; flex-direction: row; border-radius: var(--radius-md);">
+            <div class="search-box">
+                <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                <input type="search" id="search-input" class="search-input" placeholder="Search products, services, tailoring...">
+            </div>
+            
+            <div class="filter-group">
+                <label for="filter-select" class="form-label" style="margin-bottom: 0; font-size: 13px;">Filter:</label>
+                <select id="filter-select" class="filter-select">
+                    <option value="ALL">All Products</option>
+                    <option value="PRODUCE">Fresh Vegetables & Crops</option>
+                    <option value="DAIRY">Dairy & Poultry</option>
+                    <option value="HANDICRAFTS">Handicrafts & Artworks</option>
+                    <option value="SERVICES">Local Labor & Services</option>
+                    <option value="OTHERS">Others</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Products Grid -->
+        <div class="grid grid-3">
+            {% for product in products %}
+                <div class="card searchable-card" data-category="{{ product.category }}">
+                    {% if product.image %}
+                        <img src="{{ product.image.url }}" class="card-image" alt="{{ product.title }}">
+                    {% else %}
+                        <div style="height: 180px; background-color: var(--background); display: flex; align-items: center; justify-content: center; color: var(--text-muted); font-size: 14px;">No Image Available</div>
+                    {% endif %}
+                    <div class="card-body">
+                        <span class="badge badge-progress" style="margin-bottom: 8px;">{{ product.get_category_display }}</span>
+                        <h3 class="searchable-title" style="font-size: 20px; font-weight: 700; margin-bottom: 8px;">{{ product.title }}</h3>
+                        <p style="font-weight: 800; color: var(--primary); font-size: 20px; margin-bottom: 12px;">₹{{ product.price }}</p>
+                        <p class="searchable-desc" style="color: var(--text-secondary); font-size: 14px; margin-bottom: 16px;">{{ product.description }}</p>
+                        
+                        <div style="font-size: 13px; color: var(--text-secondary); border-top: 1px solid var(--border-color); padding-top: 12px; margin-top: auto;">
+                            Seller: <strong>{{ product.seller.get_full_name|default:product.seller.username }}</strong>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <a href="tel:{{ product.contact_number }}" class="btn btn-success btn-sm" style="width: 100%; box-shadow: none;">📞 Contact Seller ({{ product.contact_number }})</a>
+                    </div>
+                </div>
+            {% empty %}
+                <div class="card" style="padding: 60px; text-align: center; color: var(--text-muted); grid-column: span 3;">
+                    No listings available. Be the first to add a product or service!
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}

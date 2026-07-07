@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}My e-Village - Government Schemes{% endblock %}
+
+{% block content %}
+<section style="padding: 60px 0; background: linear-gradient(135deg, hsl(var(--primary-hue), 60%, 98%) 0%, hsl(199, 60%, 98%) 100%);">
+    <div class="container">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px; flex-wrap: wrap; gap: 16px;">
+            <div>
+                <span class="badge badge-progress" style="margin-bottom: 8px;">Welfare Schemes</span>
+                <h1 style="font-size: 36px; font-weight: 800;">Government Schemes</h1>
+            </div>
+            {% if user.is_authenticated and user.role in 'ADMIN OFFICER' %}
+                <a href="{% url 'schemes:add' %}" class="btn btn-primary">+ Add Government Scheme</a>
+            {% endif %}
+        </div>
+
+        <!-- Search and Filter Bar -->
+        <div class="search-filter-bar card" style="padding: 16px 24px; flex-direction: row; border-radius: var(--radius-md);">
+            <div class="search-box">
+                <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                <input type="search" id="search-input" class="search-input" placeholder="Search schemes by keyword...">
+            </div>
+            
+            <div class="filter-group">
+                <label for="filter-select" class="form-label" style="margin-bottom: 0; font-size: 13px;">Filter:</label>
+                <select id="filter-select" class="filter-select">
+                    <option value="ALL">All Schemes</option>
+                    <option value="FARMERS">Agriculture / Farmers</option>
+                    <option value="EDUCATION">Scholarships & Education</option>
+                    <option value="PENSIONS">Social Security & Pensions</option>
+                    <option value="WOMEN">Women Empowerment</option>
+                    <option value="HEALTH">Healthcare & Subsidies</option>
+                    <option value="EMPLOYMENT">Employment & Skill Development</option>
+                    <option value="OTHERS">Others</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Schemes Grid -->
+        <div class="grid grid-3">
+            {% for scheme in schemes %}
+                <div class="card searchable-card" data-category="{{ scheme.category }}">
+                    <div class="card-body">
+                        <span class="badge {% if scheme.category == 'FARMERS' %}badge-success{% elif scheme.category == 'EDUCATION' %}badge-progress{% elif scheme.category == 'HEALTH' %}badge-resolved{% else %}badge-pending{% endif %}" style="margin-bottom: 12px;">
+                            {{ scheme.get_category_display }}
+                        </span>
+                        <h3 class="searchable-title" style="font-size: 20px; font-weight: 700; margin-bottom: 12px; line-height: 1.4;">{{ scheme.title }}</h3>
+                        <p class="searchable-desc" style="color: var(--text-secondary); font-size: 14.5px; line-height: 1.6; margin-bottom: 24px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">{{ scheme.description }}</p>
+                    </div>
+                    <div class="card-footer" style="font-size: 13px;">
+                        <span style="color: var(--text-muted);">
+                            {% if scheme.last_date %}
+                                Last Date: <strong style="color: var(--danger);">{{ scheme.last_date|date:"d M Y" }}</strong>
+                            {% else %}
+                                Last Date: <strong style="color: var(--success);">Open Always</strong>
+                            {% endif %}
+                        </span>
+                        <a href="{% url 'schemes:detail' scheme.id %}" class="btn btn-primary btn-sm" style="box-shadow: none;">Details & Apply</a>
+                    </div>
+                </div>
+            {% empty %}
+                <div class="card" style="padding: 60px 0; text-align: center; color: var(--text-muted); grid-column: span 3;">
+                    No government schemes available at this moment.
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}

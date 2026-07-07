@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}My e-Village - Post Notice{% endblock %}
+
+{% block content %}
+<section style="padding: 60px 0; background: linear-gradient(135deg, hsl(var(--primary-hue), 60%, 98%) 0%, hsl(199, 60%, 98%) 100%);">
+    <div class="container" style="display: flex; justify-content: center;">
+        <div class="card glass" style="width: 100%; max-width: 600px; padding: 40px; border-radius: var(--radius-lg);">
+            <div style="margin-bottom: 24px;">
+                <span class="badge badge-progress" style="margin-bottom: 8px;">Panchayat Controls</span>
+                <h2 style="font-size: 28px;">Post Public Announcement</h2>
+                <p style="color: var(--text-secondary); font-size: 14px;">Publish an announcement that will be displayed on the notice board.</p>
+            </div>
+            
+            <form action="{% url 'notices:add' %}" method="post">
+                {% csrf_token %}
+                
+                <div class="form-group">
+                    <label for="title" class="form-label">Notice Title</label>
+                    <input type="text" name="title" id="title" class="form-control" placeholder="e.g. Gram Sabha Meeting / Health Camp" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="category" class="form-label">Category</label>
+                    <select name="category" id="category" class="form-control">
+                        <option value="GENERAL">General Notice</option>
+                        <option value="HEALTH">Health Alert / Camp</option>
+                        <option value="EDUCATION">School / Education</option>
+                        <option value="AGRICULTURE">Farming / Agriculture</option>
+                        <option value="MEETINGS">Gram Sabha / Meeting</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="content" class="form-label">Announcment Details / Description</label>
+                    <textarea name="content" id="content" class="form-control" placeholder="Provide complete notice details here..." required></textarea>
+                </div>
+
+                <div class="form-group" style="display: flex; align-items: center; gap: 8px;">
+                    <input type="checkbox" name="is_urgent" id="is_urgent" style="width: 16px; height: 16px; cursor: pointer;">
+                    <label for="is_urgent" style="font-size: 14px; font-weight: 600; color: var(--text-secondary); cursor: pointer; user-select: none;">Mark as Urgent (Adds red highlight on notice board)</label>
+                </div>
+                
+                <div style="display: flex; gap: 16px; margin-top: 24px;">
+                    <button type="submit" class="btn btn-primary" style="flex-grow: 1;">Publish Notice</button>
+                    <a href="{% url 'notices:list' %}" class="btn btn-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+{% endblock %}

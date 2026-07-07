@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}My e-Village - School & Education Resources{% endblock %}
+
+{% block content %}
+<section style="padding: 60px 0; background: linear-gradient(135deg, hsl(var(--primary-hue), 60%, 98%) 0%, hsl(199, 60%, 98%) 100%);">
+    <div class="container">
+        <div style="margin-bottom: 32px;">
+            <span class="badge badge-progress" style="margin-bottom: 8px;">Education Hub</span>
+            <h1 style="font-size: 36px; font-weight: 800;">School, Scholarships & Jobs</h1>
+        </div>
+
+        <!-- Search and Filter Bar -->
+        <div class="search-filter-bar card" style="padding: 16px 24px; flex-direction: row; border-radius: var(--radius-md);">
+            <div class="search-box">
+                <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                <input type="search" id="search-input" class="search-input" placeholder="Search scholarships or study materials...">
+            </div>
+            
+            <div class="filter-group">
+                <label for="filter-select" class="form-label" style="margin-bottom: 0; font-size: 13px;">Filter:</label>
+                <select id="filter-select" class="filter-select">
+                    <option value="ALL">All Resources</option>
+                    <option value="SCHOLARSHIP">Scholarship Updates</option>
+                    <option value="STUDY_MATERIAL">Digital Learning Resources</option>
+                    <option value="JOBS">Local Jobs & Skill Training</option>
+                    <option value="EXAMS">Competitive Exams Prep</option>
+                    <option value="SCHOOL_NOTICE">School Notices & Events</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Education Resources Grid -->
+        <div class="grid grid-2">
+            {% for resource in resources %}
+                <div class="card searchable-card" data-category="{{ resource.category }}" style="padding: 24px;">
+                    <div class="card-body" style="padding: 0;">
+                        <span class="badge {% if resource.category == 'SCHOLARSHIP' %}badge-pending{% elif resource.category == 'JOBS' %}badge-success{% else %}badge-progress{% endif %}" style="margin-bottom: 12px;">
+                            {{ resource.get_category_display }}
+                        </span>
+                        
+                        <h3 class="searchable-title" style="font-size: 20px; font-weight: 700; margin-bottom: 12px; line-height: 1.4;">{{ resource.title }}</h3>
+                        <p class="searchable-desc" style="color: var(--text-secondary); font-size: 14.5px; line-height: 1.6; margin-bottom: 24px;">{{ resource.description }}</p>
+                    </div>
+                    
+                    <div class="card-footer" style="padding: 16px 0 0 0; background: none; border-top: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+                        <span style="font-size: 11px; color: var(--text-muted);">Published: {{ resource.created_at|date:"d M Y" }}</span>
+                        {% if resource.link %}
+                            <a href="{{ resource.link }}" target="_blank" class="btn btn-primary btn-sm">Access Resource &nearr;</a>
+                        {% endif %}
+                    </div>
+                </div>
+            {% empty %}
+                <div class="card" style="padding: 60px; text-align: center; color: var(--text-muted); grid-column: span 2;">
+                    No educational learning resources or scholarship notices posted yet.
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}

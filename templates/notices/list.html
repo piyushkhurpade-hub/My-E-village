@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}My e-Village - Notices & Announcements{% endblock %}
+
+{% block content %}
+<section style="padding: 60px 0; background: linear-gradient(135deg, hsl(var(--primary-hue), 60%, 98%) 0%, hsl(199, 60%, 98%) 100%);">
+    <div class="container">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px; flex-wrap: wrap; gap: 16px;">
+            <div>
+                <span class="badge badge-progress" style="margin-bottom: 8px;">Notice Board</span>
+                <h1 style="font-size: 36px; font-weight: 800;">Public Notices</h1>
+            </div>
+            {% if user.is_authenticated and user.role in 'ADMIN OFFICER' %}
+                <a href="{% url 'notices:add' %}" class="btn btn-primary">+ Post New Notice</a>
+            {% endif %}
+        </div>
+
+        <!-- Search and Filter Bar -->
+        <div class="search-filter-bar card" style="padding: 16px 24px; flex-direction: row; border-radius: var(--radius-md);">
+            <div class="search-box">
+                <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                <input type="search" id="search-input" class="search-input" placeholder="Search notices by keyword...">
+            </div>
+            
+            <div class="filter-group">
+                <label for="filter-select" class="form-label" style="margin-bottom: 0; font-size: 13px;">Category:</label>
+                <select id="filter-select" class="filter-select">
+                    <option value="ALL">All Categories</option>
+                    <option value="GENERAL">General Notice</option>
+                    <option value="HEALTH">Health Alert / Camp</option>
+                    <option value="EDUCATION">School / Education</option>
+                    <option value="AGRICULTURE">Farming / Agriculture</option>
+                    <option value="MEETINGS">Gram Sabha / Meeting</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Notices Cards List -->
+        <div class="grid grid-3">
+            {% for notice in notices %}
+                <div class="card searchable-card" data-category="{{ notice.category }}" style="position: relative;">
+                    <div class="card-body">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                            <span class="badge {% if notice.category == 'MEETINGS' %}badge-progress{% elif notice.category == 'HEALTH' %}badge-resolved{% elif notice.category == 'AGRICULTURE' %}badge-success{% else %}badge-pending{% endif %}">
+                                {{ notice.get_category_display }}
+                            </span>
+                            {% if notice.is_urgent %}
+                                <span class="badge badge-urgent" style="font-size: 10px;">Urgent</span>
+                            {% endif %}
+                        </div>
+                        <h3 class="searchable-title" style="font-size: 20px; font-weight: 700; margin-bottom: 12px; line-height: 1.4;">{{ notice.title }}</h3>
+                        <p class="searchable-desc" style="color: var(--text-secondary); font-size: 14px; line-height: 1.6; margin-bottom: 24px;">{{ notice.content }}</p>
+                    </div>
+                    <div class="card-footer" style="font-size: 12px; color: var(--text-muted);">
+                        <span>By: {{ notice.published_by.get_full_name|default:notice.published_by.username }}</span>
+                        <span>{{ notice.created_at|date:"d M Y" }}</span>
+                    </div>
+                </div>
+            {% empty %}
+                <div class="card" style="padding: 60px 0; text-align: center; color: var(--text-muted); grid-column: span 3;">
+                    No notices published at this moment.
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}

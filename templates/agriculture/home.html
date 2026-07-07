@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}My e-Village - Agriculture Advisory{% endblock %}
+
+{% block content %}
+<section style="padding: 60px 0; background: linear-gradient(135deg, hsl(var(--primary-hue), 60%, 98%) 0%, hsl(199, 60%, 98%) 100%);">
+    <div class="container">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 36px; flex-wrap: wrap; gap: 16px;">
+            <div>
+                <span class="badge badge-success" style="margin-bottom: 8px;">Kisan Mitra Portal</span>
+                <h1 style="font-size: 36px; font-weight: 800;">Agriculture Support</h1>
+            </div>
+            {% if user.is_authenticated and user.role in 'ADMIN OFFICER' %}
+                <a href="{% url 'agriculture:add_tip' %}" class="btn btn-success">+ Post Farming Tip</a>
+            {% endif %}
+        </div>
+
+        <div class="grid grid-3" style="grid-template-columns: 0.8fr 1.2fr; gap: 40px;">
+            <!-- Mandi Prices Widget -->
+            <div>
+                <div class="card" style="padding: 24px; margin-bottom: 30px;">
+                    <h3 style="font-size: 20px; margin-bottom: 16px; border-bottom: 2px solid var(--border-color); padding-bottom: 8px;">Mandi Pricing (₹/Quintal)</h3>
+                    <div class="table-container" style="border: none; box-shadow: none; margin-bottom: 0;">
+                        <table style="border-radius: 0;">
+                            <thead>
+                                <tr>
+                                    <th style="padding: 10px; background: none;">Crop</th>
+                                    <th style="padding: 10px; background: none;">Price</th>
+                                    <th style="padding: 10px; background: none;">Market</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in mandi_prices %}
+                                    <tr>
+                                        <td style="padding: 12px 10px; font-weight: 600;">{{ item.crop_name }}</td>
+                                        <td style="padding: 12px 10px; font-weight: 700; color: var(--success);">₹{{ item.price_per_quintal }}</td>
+                                        <td style="padding: 12px 10px; font-size: 12px; color: var(--text-secondary);">{{ item.market_name }}</td>
+                                    </tr>
+                                {% empty %}
+                                    <tr>
+                                        <td colspan="3" style="text-align: center; color: var(--text-muted); padding: 20px;">No prices available.</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Weather Card -->
+                <div class="card glass" style="padding: 24px; border-radius: var(--radius-lg);">
+                    <h3 style="font-size: 18px; margin-bottom: 12px; color: var(--primary);">48-Hour Rain Forecast</h3>
+                    <p style="font-size: 14.5px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 16px;">Medium-heavy scattered rain showers expected in the upcoming 48 hours. Winds at 12 km/h. High humidity levels.</p>
+                    <span class="badge badge-urgent">Precipitation Warning</span>
+                </div>
+            </div>
+
+            <!-- Agriculture Advisories Feed -->
+            <div>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+                    <h3 style="font-size: 24px;">Expert Crop & Farming Advice</h3>
+                    
+                    <select id="filter-select" class="filter-select" style="padding: 8px 12px; font-size: 13px;">
+                        <option value="ALL">All Advice</option>
+                        <option value="CROP">Crop Advisory</option>
+                        <option value="WEATHER">Weather Alert</option>
+                        <option value="FERTILIZER">Fertilizer Guidance</option>
+                        <option value="PEST">Pest & Disease Control</option>
+                    </select>
+                </div>
+
+                <div style="display: flex; flex-direction: column; gap: 24px;">
+                    {% for tip in tips %}
+                        <div class="card searchable-card" data-category="{{ tip.category }}" style="padding: 24px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                                <span class="badge {% if tip.category == 'PEST' %}badge-urgent{% elif tip.category == 'WEATHER' %}badge-pending{% else %}badge-success{% endif %}">
+                                    {{ tip.get_category_display }}
+                                </span>
+                                {% if tip.crop_name %}
+                                    <span class="badge badge-progress" style="font-size: 11px;">Crop: {{ tip.crop_name }}</span>
+                                {% endif %}
+                            </div>
+                            <h4 class="searchable-title" style="font-size: 20px; font-weight: 700; margin-bottom: 12px; line-height: 1.4;">{{ tip.title }}</h4>
+                            <p class="searchable-desc" style="color: var(--text-secondary); font-size: 14.5px; line-height: 1.6; margin-bottom: 16px; white-space: pre-line;">{{ tip.content }}</p>
+                            
+                            {% if tip.image %}
+                                <div style="margin-bottom: 16px;">
+                                    <img src="{{ tip.image.url }}" style="max-width: 100%; height: auto; border-radius: var(--radius-sm);" alt="{{ tip.title }}">
+                                </div>
+                            {% endif %}
+                            
+                            <div style="font-size: 11px; color: var(--text-muted); text-align: right;">
+                                Published on: {{ tip.created_at|date:"d M Y, h:i A" }}
+                            </div>
+                        </div>
+                    {% empty %}
+                        <div class="card" style="padding: 40px; text-align: center; color: var(--text-muted);">
+                            No agricultural advisory tips posted yet.
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

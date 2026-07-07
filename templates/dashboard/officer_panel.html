@@ -1,0 +1,123 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}My e-Village - Staff/Officer Dashboard{% endblock %}
+
+{% block content %}
+<div class="container" style="padding-top: 40px; padding-bottom: 80px;">
+    <!-- Profile header -->
+    <div class="profile-section">
+        <img src="https://ui-avatars.com/api/?name={{ user.first_name }}+{{ user.last_name }}&background=10b981&color=fff&size=128" class="profile-avatar" alt="Officer Avatar">
+        <div class="profile-info">
+            <h2>Pranam Officer Sahib! ({{ user.get_full_name|default:user.username }})</h2>
+            <p>Role: <strong>Rural Development Officer / Advisor</strong> | Village: {{ user.village_name }}</p>
+        </div>
+    </div>
+
+    <!-- Analytics Widgets -->
+    <div class="metrics-grid">
+        <div class="widget-card">
+            <div class="widget-icon-wrapper primary">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            </div>
+            <div class="widget-details">
+                <h4>My Posted Notices</h4>
+                <div class="widget-value">{{ total_notices }}</div>
+            </div>
+        </div>
+        <div class="widget-card">
+            <div class="widget-icon-wrapper warning">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0zM12 9v4M12 17h.01"/></svg>
+            </div>
+            <div class="widget-details">
+                <h4>Pending Grievances</h4>
+                <div class="widget-value">{{ pending_complaints_count }}</div>
+            </div>
+        </div>
+        <div class="widget-card">
+            <div class="widget-icon-wrapper success">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><path d="M9 12l2 2 4-4"/></svg>
+            </div>
+            <div class="widget-details">
+                <h4>Active Cases</h4>
+                <div class="widget-value">{{ total_complaints }}</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="dashboard-container">
+        <!-- Sidebar Administration Controls -->
+        <aside class="dashboard-sidebar">
+            <a href="{% url 'dashboard:panel' %}" class="sidebar-link active">
+                <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                Overview
+            </a>
+            <a href="{% url 'notices:add' %}" class="sidebar-link">
+                <svg viewBox="0 0 24 24"><path d="M12 20h9M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+                Post Notice
+            </a>
+            <a href="{% url 'agriculture:add_tip' %}" class="sidebar-link">
+                <svg viewBox="0 0 24 24"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                Add Farming Tip
+            </a>
+        </aside>
+
+        <!-- Main Officer Content Area -->
+        <main class="dashboard-main">
+            <!-- Active Grievance Cases list -->
+            <div>
+                <h3 class="dashboard-section-title">Urgent Grievance Action Feed</h3>
+                
+                <div style="display: flex; flex-direction: column; gap: 20px;">
+                    {% for complaint in recent_complaints %}
+                        <div class="card" style="padding: 24px; border-left: 5px solid {% if complaint.status == 'PENDING' %}var(--danger){% elif complaint.status == 'IN_PROGRESS' %}var(--warning){% else %}var(--success){% endif %};">
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; margin-bottom: 12px; flex-wrap: wrap;">
+                                <div>
+                                    <span class="badge {% if complaint.status == 'PENDING' %}badge-pending{% elif complaint.status == 'IN_PROGRESS' %}badge-progress{% else %}badge-resolved{% endif %}">
+                                        {{ complaint.get_status_display }}
+                                    </span>
+                                    <h4 style="font-size: 18px; margin-top: 6px;">{{ complaint.title }}</h4>
+                                </div>
+                                <div style="font-size: 13px; color: var(--text-secondary); text-align: right;">
+                                    Raised by: <strong>{{ complaint.raised_by.get_full_name|default:complaint.raised_by.username }}</strong><br>
+                                    Phone: {{ complaint.raised_by.phone_number }}
+                                </div>
+                            </div>
+                            <p style="font-size: 14px; color: var(--text-secondary); margin-bottom: 16px;">{{ complaint.description }}</p>
+                            
+                            {% if complaint.photo %}
+                                <div style="margin-bottom: 16px;">
+                                    <img src="{{ complaint.photo.url }}" style="max-width: 250px; height: auto; border-radius: var(--radius-sm); border: 1px solid var(--border-color);" alt="Complaint image">
+                                </div>
+                            {% endif %}
+
+                            <!-- Reply Form -->
+                            <form action="{% url 'complaints:update' complaint.id %}" method="post" style="background-color: var(--background); padding: 20px; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
+                                {% csrf_token %}
+                                <div style="display: grid; grid-template-columns: 1fr auto; gap: 16px; align-items: flex-end; flex-wrap: wrap;">
+                                    <div class="form-group" style="margin-bottom: 0;">
+                                        <label for="admin_reply_{{ complaint.id }}" class="form-label" style="font-size: 13px;">Official Response</label>
+                                        <input type="text" name="admin_reply" id="admin_reply_{{ complaint.id }}" class="form-control" placeholder="Type status updates or resolution comments..." value="{{ complaint.admin_reply|default:'' }}">
+                                    </div>
+                                    <div style="display: flex; gap: 8px;">
+                                        <select name="status" class="filter-select" style="padding: 10px 14px;">
+                                            <option value="PENDING" {% if complaint.status == 'PENDING' %}selected{% endif %}>Pending</option>
+                                            <option value="IN_PROGRESS" {% if complaint.status == 'IN_PROGRESS' %}selected{% endif %}>In Progress</option>
+                                            <option value="RESOLVED" {% if complaint.status == 'RESOLVED' %}selected{% endif %}>Resolved</option>
+                                        </select>
+                                        <button type="submit" class="btn btn-primary">Update</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    {% empty %}
+                        <div class="card" style="padding: 40px; text-align: center; color: var(--text-muted);">
+                            No active pending/in-progress complaints found.
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+{% endblock %}

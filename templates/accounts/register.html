@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}My e-Village - Register{% endblock %}
+
+{% block content %}
+<section style="padding: 60px 0; display: flex; align-items: center; justify-content: center; min-height: calc(100vh - 240px); background: linear-gradient(135deg, hsl(var(--primary-hue), 60%, 98%) 0%, hsl(199, 60%, 98%) 100%);">
+    <div class="container" style="display: flex; justify-content: center; width: 100%;">
+        <div class="card glass" style="width: 100%; max-width: 500px; padding: 40px; border-radius: var(--radius-lg);">
+            <div style="text-align: center; margin-bottom: 28px;">
+                <h2 style="font-size: 28px; margin-bottom: 8px;">Create Account</h2>
+                <p style="color: var(--text-secondary); font-size: 14px;">Join the digital e-Village community portal</p>
+            </div>
+            
+            <form action="{% url 'accounts:register' %}" method="post">
+                {% csrf_token %}
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                    <div class="form-group">
+                        <label for="first_name" class="form-label">First Name</label>
+                        <input type="text" name="first_name" id="first_name" class="form-control" placeholder="Rahul" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="last_name" class="form-label">Last Name</label>
+                        <input type="text" name="last_name" id="last_name" class="form-control" placeholder="Jadhav" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="username" class="form-label">Username</label>
+                    <input type="text" name="username" id="username" class="form-control" placeholder="Choose a username" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="email" class="form-label">Email Address</label>
+                    <input type="email" name="email" id="email" class="form-control" placeholder="rahul@example.com" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="phone_number" class="form-label">Mobile Number</label>
+                    <input type="text" name="phone_number" id="phone_number" class="form-control" placeholder="10-digit mobile number" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="role" class="form-label">I am a...</label>
+                    <select name="role" id="role" class="form-control">
+                        <option value="VILLAGER">Villager (Gramer)</option>
+                        <option value="OFFICER">Staff / Officer / Advisor</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" name="password" id="password" class="form-control" placeholder="Create password" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="confirm_password" class="form-label">Confirm Password</label>
+                    <input type="password" name="confirm_password" id="confirm_password" class="form-control" placeholder="Repeat password" required>
+                </div>
+                
+                <button type="submit" class="btn btn-primary" style="width: 100%; padding: 12px; margin-top: 12px;">Sign Up</button>
+            </form>
+            
+            <div style="text-align: center; margin-top: 24px; font-size: 14px; color: var(--text-secondary);">
+                Already have an account? <a href="{% url 'accounts:login' %}" style="font-weight: 600;">Log In</a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,144 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}My e-Village - Villager Dashboard{% endblock %}
+
+{% block content %}
+<div class="container" style="padding-top: 40px; padding-bottom: 80px;">
+    <!-- Profile header -->
+    <div class="profile-section">
+        <img src="{% if user.profile_picture %}{{ user.profile_picture.url }}{% else %}{% static 'images/default-avatar.png' %}{% endif %}" onerror="this.src='https://ui-avatars.com/api/?name={{ user.first_name }}+{{ user.last_name }}&background=4f46e5&color=fff&size=128'" class="profile-avatar" alt="Avatar">
+        <div class="profile-info">
+            <h2>Namaskar, {{ user.get_full_name|default:user.username }}!</h2>
+            <p>Role: <strong>Villager</strong> | Mobile: {{ user.phone_number|default:"Not Provided" }} | Village: {{ user.village_name }}</p>
+        </div>
+    </div>
+
+    <div class="dashboard-container">
+        <!-- Sidebar Navigation -->
+        <aside class="dashboard-sidebar">
+            <a href="{% url 'dashboard:panel' %}" class="sidebar-link active">
+                <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                Overview
+            </a>
+            <a href="{% url 'complaints:submit' %}" class="sidebar-link">
+                <svg viewBox="0 0 24 24"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+                File New Complaint
+            </a>
+            <a href="{% url 'marketplace:add' %}" class="sidebar-link">
+                <svg viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+                List Market Product
+            </a>
+        </aside>
+
+        <!-- Main Panel Dashboard Content -->
+        <main class="dashboard-main">
+            <!-- Widgets overview -->
+            <div class="metrics-grid">
+                <div class="widget-card">
+                    <div class="widget-icon-wrapper primary">
+                        <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 20h9M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+                    </div>
+                    <div class="widget-details">
+                        <h4>My Complaints</h4>
+                        <div class="widget-value">{{ my_complaints.count }}</div>
+                    </div>
+                </div>
+                <div class="widget-card">
+                    <div class="widget-icon-wrapper success">
+                        <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4zM3 6h18M16 10a4 4 0 0 1-8 0"></path></svg>
+                    </div>
+                    <div class="widget-details">
+                        <h4>Active Products</h4>
+                        <div class="widget-value">{{ my_products.count }}</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Left: Complaints List -->
+            <div style="margin-bottom: 40px;">
+                <div class="dashboard-section-title">
+                    <h3>My Grievances & Complaints</h3>
+                    <a href="{% url 'complaints:submit' %}" class="btn btn-primary btn-sm">+ File Complaint</a>
+                </div>
+                
+                <div style="display: flex; flex-direction: column; gap: 16px;">
+                    {% for complaint in my_complaints %}
+                        <div class="card" style="padding: 20px;">
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; margin-bottom: 12px; flex-wrap: wrap;">
+                                <div>
+                                    <span class="badge {% if complaint.category == 'ROADS' %}badge-pending{% elif complaint.category == 'WATER' %}badge-progress{% else %}badge-pending{% endif %}" style="margin-right: 8px;">
+                                        {{ complaint.get_category_display }}
+                                    </span>
+                                    <h4 style="font-size: 18px; display: inline-block;">{{ complaint.title }}</h4>
+                                </div>
+                                <span class="badge {% if complaint.status == 'PENDING' %}badge-pending{% elif complaint.status == 'IN_PROGRESS' %}badge-progress{% else %}badge-resolved{% endif %}">
+                                    {{ complaint.get_status_display }}
+                                </span>
+                            </div>
+                            <p style="font-size: 14px; color: var(--text-secondary); margin-bottom: 16px;">{{ complaint.description }}</p>
+                            
+                            {% if complaint.photo %}
+                                <div style="margin-bottom: 16px;">
+                                    <img src="{{ complaint.photo.url }}" style="max-width: 200px; height: auto; border-radius: var(--radius-sm); border: 1px solid var(--border-color);" alt="Complaint attachment">
+                                </div>
+                            {% endif %}
+
+                            {% if complaint.admin_reply %}
+                                <div style="padding: 16px; background-color: var(--primary-light); border-left: 4px solid var(--primary); border-radius: 0 var(--radius-sm) var(--radius-sm) 0; font-size: 13.5px; margin-bottom: 12px;">
+                                    <strong>📢 Gram Panchayat Reply:</strong>
+                                    <p style="margin-top: 4px; color: var(--text-secondary);">{{ complaint.admin_reply }}</p>
+                                </div>
+                            {% endif %}
+                            
+                            <div style="font-size: 11px; color: var(--text-muted);">
+                                Filed on: {{ complaint.created_at|date:"d M Y, h:i A" }} | Last updated: {{ complaint.updated_at|date:"d M Y, h:i A" }}
+                            </div>
+                        </div>
+                    {% empty %}
+                        <div class="card" style="padding: 40px; text-align: center; color: var(--text-muted);">
+                            You haven't filed any complaints yet. Use the button above to report a civic issue.
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Right: Products List -->
+            <div>
+                <div class="dashboard-section-title">
+                    <h3>My Marketplace Listings</h3>
+                    <a href="{% url 'marketplace:add' %}" class="btn btn-secondary btn-sm">+ Add Product</a>
+                </div>
+                
+                <div class="grid grid-2">
+                    {% for product in my_products %}
+                        <div class="card">
+                            {% if product.image %}
+                                <img src="{{ product.image.url }}" class="card-image" alt="{{ product.title }}">
+                            {% else %}
+                                <div style="height: 180px; background-color: var(--background); display: flex; align-items: center; justify-content: center; color: var(--text-muted); font-size: 14px;">No Image Available</div>
+                            {% endif %}
+                            <div class="card-body">
+                                <span class="badge badge-progress" style="margin-bottom: 8px;">{{ product.get_category_display }}</span>
+                                <h4 class="card-title">{{ product.title }}</h4>
+                                <p style="font-weight: 700; color: var(--primary); font-size: 18px; margin-bottom: 12px;">₹{{ product.price }}</p>
+                                <p class="card-text">{{ product.description }}</p>
+                            </div>
+                            <div class="card-footer">
+                                <span class="badge {% if product.is_available %}badge-resolved{% else %}badge-pending{% endif %}">
+                                    {% if product.is_available %}Available{% else %}Sold Out{% endif %}
+                                </span>
+                                <span style="font-size: 12px; color: var(--text-muted);">Posted {{ product.created_at|date:"d M Y" }}</span>
+                            </div>
+                        </div>
+                    {% empty %}
+                        <div class="card" style="padding: 40px; text-align: center; color: var(--text-muted); grid-column: span 2;">
+                            You haven't listed any items for sale in the marketplace.
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+{% endblock %}

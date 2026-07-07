@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}My e-Village - File Complaint{% endblock %}
+
+{% block content %}
+<section style="padding: 60px 0; background: linear-gradient(135deg, hsl(var(--primary-hue), 60%, 98%) 0%, hsl(199, 60%, 98%) 100%);">
+    <div class="container" style="display: flex; justify-content: center;">
+        <div class="card glass" style="width: 100%; max-width: 600px; padding: 40px; border-radius: var(--radius-lg);">
+            <div style="margin-bottom: 24px;">
+                <span class="badge badge-pending" style="margin-bottom: 8px;">Grievance Redressal</span>
+                <h2 style="font-size: 28px;">Register a Civic Complaint</h2>
+                <p style="color: var(--text-secondary); font-size: 14px;">Report village infrastructure issues directly to the Gram Panchayat.</p>
+            </div>
+            
+            <form action="{% url 'complaints:submit' %}" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                
+                <div class="form-group">
+                    <label for="title" class="form-label">Complaint Title / Summary</label>
+                    <input type="text" name="title" id="title" class="form-control" placeholder="e.g. Water leak near Ward 3 / Street light broken" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="category" class="form-label">Category</label>
+                    <select name="category" id="category" class="form-control">
+                        <option value="ROADS">Roads & Infrastructure</option>
+                        <option value="WATER">Water Supply & Quality</option>
+                        <option value="ELECTRICITY">Electricity & Power Outages</option>
+                        <option value="SANITATION">Sanitation & Waste Management</option>
+                        <option value="INTERNET">Internet & Network Connectivity</option>
+                        <option value="HEALTH">Public Health / Medical Services</option>
+                        <option value="OTHERS">Others</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="description" class="form-label">Detailed Description</label>
+                    <textarea name="description" id="description" class="form-control" placeholder="Describe the issue clearly, mentioning landmarks or wards..." required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="photo" class="form-label">Attach Photo (Optional, highly recommended)</label>
+                    <input type="file" name="photo" id="photo" class="form-control" accept="image/*" style="padding: 8px 12px;">
+                </div>
+                
+                <div style="display: flex; gap: 16px; margin-top: 28px;">
+                    <button type="submit" class="btn btn-primary" style="flex-grow: 1;">Submit Grievance</button>
+                    <a href="{% url 'dashboard:panel' %}" class="btn btn-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+{% endblock %}

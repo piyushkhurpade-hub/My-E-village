@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}My e-Village - Documents & Digital Services{% endblock %}
+
+{% block content %}
+<section style="padding: 60px 0; background: linear-gradient(135deg, hsl(var(--primary-hue), 60%, 98%) 0%, hsl(199, 60%, 98%) 100%);">
+    <div class="container" style="max-width: 900px;">
+        <div style="margin-bottom: 32px;">
+            <span class="badge badge-progress" style="margin-bottom: 8px;">Citizen Services</span>
+            <h1 style="font-size: 36px; font-weight: 800;">Documents & Certificates Guide</h1>
+            <p style="color: var(--text-secondary); font-size: 15px; margin-top: 8px;">Check required checklists and official links to apply for vital government certificates.</p>
+        </div>
+
+        <!-- Search Bar -->
+        <div class="search-filter-bar card" style="padding: 16px 24px; border-radius: var(--radius-md); margin-bottom: 32px;">
+            <div class="search-box" style="max-width: 100%;">
+                <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                <input type="search" id="search-input" class="search-input" placeholder="Search document name (e.g. Caste, Income, Domicile)...">
+            </div>
+        </div>
+
+        <!-- Document Guides Feed -->
+        <div style="display: flex; flex-direction: column; gap: 32px;">
+            {% for guide in guides %}
+                <div class="card searchable-card" style="padding: 32px;">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 1px solid var(--border-color); padding-bottom: 16px; margin-bottom: 20px; flex-wrap: wrap; gap: 12px;">
+                        <div>
+                            <h2 class="searchable-title" style="font-size: 24px; font-weight: 700;">{{ guide.name }}</h2>
+                            <p style="color: var(--text-secondary); font-size: 14px; margin-top: 4px;">{{ guide.description }}</p>
+                        </div>
+                        <div style="text-align: right;">
+                            <span style="font-size: 12px; color: var(--text-muted); display: block;">Standard Processing</span>
+                            <span class="badge badge-progress" style="font-size: 13px; font-weight: 700; margin-top: 4px;">⏱️ {{ guide.processing_time }}</span>
+                        </div>
+                    </div>
+
+                    <!-- Checklist -->
+                    <div style="margin-bottom: 24px;">
+                        <h4 style="font-size: 15px; font-weight: 600; color: var(--text-secondary); margin-bottom: 8px;">📄 Required Documents Checklist:</h4>
+                        <div style="background-color: var(--background); padding: 16px 20px; border-radius: var(--radius-md); font-size: 14px; color: var(--text-secondary); line-height: 1.6; white-space: pre-line;">{{ guide.required_documents }}</div>
+                    </div>
+
+                    <!-- Apply -->
+                    <div style="display: flex; justify-content: flex-end;">
+                        {% if guide.official_link %}
+                            <a href="{{ guide.official_link }}" target="_blank" class="btn btn-primary btn-sm">Apply via Aaple Sarkar &nearr;</a>
+                        {% else %}
+                            <span class="btn btn-secondary btn-sm" style="cursor: not-allowed; opacity: 0.6;">Apply offline at Maha e-Seva Kendra</span>
+                        {% endif %}
+                    </div>
+                </div>
+            {% empty %}
+                <div class="card" style="padding: 40px; text-align: center; color: var(--text-muted);">
+                    No document guides available.
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}

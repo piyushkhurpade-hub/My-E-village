@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}My e-Village - Add Health Service{% endblock %}
+
+{% block content %}
+<section style="padding: 60px 0; background: linear-gradient(135deg, hsl(var(--primary-hue), 60%, 98%) 0%, hsl(199, 60%, 98%) 100%);">
+    <div class="container" style="display: flex; justify-content: center;">
+        <div class="card glass" style="width: 100%; max-width: 600px; padding: 40px; border-radius: var(--radius-lg);">
+            <div style="margin-bottom: 24px;">
+                <span class="badge badge-urgent" style="margin-bottom: 8px;">Medical Center Controls</span>
+                <h2 style="font-size: 28px;">Add Medical or Emergency Service</h2>
+                <p style="color: var(--text-secondary); font-size: 14px;">Add a doctor clinic, hospital branch, or ambulance helpline contact details.</p>
+            </div>
+            
+            <form action="{% url 'health:add' %}" method="post">
+                {% csrf_token %}
+                
+                <div class="form-group">
+                    <label for="name" class="form-label">Service Provider Name</label>
+                    <input type="text" name="name" id="name" class="form-control" placeholder="e.g. e-Village Wadgaon Ambulance / Dr. Sunil Deshmukh" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="service_type" class="form-label">Service Type</label>
+                    <select name="service_type" id="service_type" class="form-control">
+                        <option value="DOCTOR">Local Doctor / Clinic</option>
+                        <option value="AMBULANCE">Ambulance Service</option>
+                        <option value="PHC">Primary Health Centre (PHC)</option>
+                        <option value="VACCINE">Vaccination Camp</option>
+                        <option value="EMERGENCY">Emergency Helpline</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="contact_number" class="form-label">Contact Mobile / Telephone Number</label>
+                    <input type="text" name="contact_number" id="contact_number" class="form-control" placeholder="Phone number (with STD code if landline)" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="timing" class="form-label">Operating Hours / Timing</label>
+                    <input type="text" name="timing" id="timing" class="form-control" placeholder="e.g. 24/7 or 9:00 AM - 5:00 PM" default="24/7">
+                </div>
+
+                <div class="form-group">
+                    <label for="location" class="form-label">Clinic / Facility Location (Optional)</label>
+                    <input type="text" name="location" id="location" class="form-control" placeholder="e.g. Main Bazar Road, Ward 1">
+                </div>
+
+                <div class="form-group">
+                    <label for="description" class="form-label">Specialization / Facility Services Description</label>
+                    <textarea name="description" id="description" class="form-control" placeholder="List diseases treated, tests conducted, or ambulance features..."></textarea>
+                </div>
+                
+                <div style="display: flex; gap: 16px; margin-top: 24px;">
+                    <button type="submit" class="btn btn-danger" style="flex-grow: 1;">Save Health Service</button>
+                    <a href="{% url 'health:list' %}" class="btn btn-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+{% endblock %}
