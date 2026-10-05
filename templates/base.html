@@ -76,6 +76,7 @@
     <!-- Main Content block -->
     <main>
         {% block content %}{% endblock %}
+
     </main>
 
     <!-- Footer component -->
@@ -118,6 +119,13 @@
             </div>
         </div>
     </footer>
+
+      <!-- SupportIQ chat widget -->
+     <script src="https://supportiq-backend-b9o5.onrender.com/widget.js"
+        data-company="company1"
+        data-api-url="https://supportiq-backend-b9o5.onrender.com"
+        async>
+     </script>
 
     <!-- Main JavaScript script -->
     <script src="{% static 'js/main.js' %}"></script>
